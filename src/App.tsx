@@ -176,7 +176,6 @@ export default function App() {
       }
     };
 
-    seedDatabase();
 
     // B. Sync users list in real-time
     const unsubUsers = onSnapshot(collection(db, "users"), (snapshot) => {
@@ -1085,7 +1084,7 @@ export default function App() {
           <span>&copy; {new Date().getFullYear()} ديوان البرمجة للتدريب البرمجي والتعلم السحابي المتكامل. متصل بقاعدة بيانات مستقرة حية.</span>
           <div className="flex items-center gap-1.5 text-blue-400/80">
             <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-ping"></span>
-            <span>بث وقراءة البيانات ومطابقة الهويات مستمرة حياً ✓</span>
+            <span>صلي علي النبي</span>
           </div>
         </div>
       </footer>
