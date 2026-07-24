@@ -14,7 +14,7 @@ async function startServer() {
   app.use(express.json());
 
   // Initialize Hugging Face AI client server-side
-  const hf = new HfInference(process.env.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);
+  const hf = new HfInference(process.env.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);
 
   // Endpoints FIRST
   app.post("/api/ai/fix-code", async (req, res) => {
