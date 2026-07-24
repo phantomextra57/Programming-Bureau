@@ -1,7 +1,7 @@
 import express from "express";
 import path from "path";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI, Type } from "@google/genai";
+import { HfInference } from "@huggingface/inference";
 import dotenv from "dotenv";
 
 dotenv.config();
@@ -13,16 +13,8 @@ async function startServer() {
   // Middleware
   app.use(express.json());
 
-  // Initialize Gemini AI client server-side
-  // We must set the User-Agent header to 'aistudio-build' in httpOptions for telemetry.
-  const ai = new GoogleGenAI({
-    apiKey: process.env.GEMINI_API_KEY,
-    httpOptions: {
-      headers: {
-        'User-Agent': 'aistudio-build',
-      }
-    }
-  });
+  // Initialize Hugging Face AI client server-side
+  const hf = new HfInference(process.env.HF_TOKEN);
 
   // Endpoints FIRST
   app.post("/api/ai/fix-code", async (req, res) => {
@@ -47,36 +39,31 @@ CRITICAL CONSTRAINTS FOR THE CORRECTED CODE (fixedCode):
 CRITICAL CONSTRAINTS FOR THE ARABIC EXPLANATION (explanation):
 - Acknowledge and politely explain the root cause of the error first (e.g. "تم العثور على خطأ مادي في السطر X...").
 - Detail the exact correction step (e.g. "قمنا بتصحيح دالة Y لتفادي Z...").
-- Keep the language supportive, highly professional, educational, and encouraging in modern fluent Arabic.`;
+- Keep the language supportive, highly professional, educational, and encouraging in modern fluent Arabic.
 
-      const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: prompt + "\n\nHere is the user's code:\n" + code,
-        config: {
-          responseMimeType: "application/json",
-          responseSchema: {
-            type: Type.OBJECT,
-            properties: {
-              fixedCode: {
-                type: Type.STRING,
-                description: "The complete corrected and polished code"
-              },
-              explanation: {
-                type: Type.STRING,
-                description: "The detailed explanation of what errors were corrected and improvements made, in Arabic"
-              }
-            },
-            required: ["fixedCode", "explanation"]
-          }
-        }
+You MUST respond strictly in valid JSON format with the following keys:
+{
+  "fixedCode": "the corrected code string",
+  "explanation": "the explanation in Arabic"
+}`;
+
+      const response = await hf.chatCompletion({
+        model: "meta-llama/Meta-Llama-3-8B-Instruct",
+        messages: [
+          { role: "system", content: "You always output pure valid JSON without markdown wrapping." },
+          { role: "user", content: prompt + "\n\nHere is the user's code:\n" + code }
+        ],
+        max_tokens: 2048,
+        temperature: 0.2,
       });
 
-      const responseText = response.text;
+      const responseText = response.choices.message.content;
       if (!responseText) {
         throw new Error("لم تنجح عملية توليد الإجابة من الذكاء الاصطناعي.");
       }
 
-      const data = JSON.parse(responseText.trim());
+      const cleanJson = responseText.replace(/```json|```/g, "").trim();
+      const data = JSON.parse(cleanJson);
       res.json(data);
     } catch (err: any) {
       console.error("AI Code Fix error:", err);
