@@ -1,0 +1,97 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile in the coding community platform",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique user ID" },
+        "name": { "type": "string", "description": "Full display name of the user" },
+        "username": { "type": "string", "description": "Unique username" },
+        "role": { "type": "string", "enum": ["student", "teacher"], "description": "Role of the user" },
+        "avatarUrl": { "type": "string", "description": "URL to user's avatar" },
+        "bannerUrl": { "type": "string", "description": "URL to user's custom profile banner" },
+        "bio": { "type": "string", "description": "Short biography of the user" },
+        "skills": { "type": "array", "description": "Programming languages/skills of the user" },
+        "subscribersCount": { "type": "integer", "description": "Number of subscribers if the user is a teacher" },
+        "subscribedTeachers": { "type": "array", "description": "IDs of teachers subscribed to" },
+        "completedChallenges": { "type": "integer", "description": "Number of challenges completed" },
+        "solvedErrorsCount": { "type": "integer", "description": "Number of coding errors solved for others" }
+      },
+      "required": ["id", "name", "username", "role", "avatarUrl", "bio", "skills", "subscribersCount", "subscribedTeachers"]
+    },
+    "Post": {
+      "title": "Post",
+      "description": "A discussion post, coding error query, or tutorial shared in the community feed",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "The unique post ID" },
+        "authorId": { "type": "string", "description": "User ID of the author" },
+        "authorName": { "type": "string", "description": "Name of the author" },
+        "authorAvatarUrl": { "type": "string", "description": "Avatar URL of the author" },
+        "authorRole": { "type": "string", "enum": ["student", "teacher"], "description": "Role of the author" },
+        "content": { "type": "string", "description": "The main text body of the post" },
+        "type": { "type": "string", "enum": ["general", "error", "tutorial"], "description": "Category type of the post" },
+        "language": { "type": "string", "description": "Optional associated programming language" },
+        "codeSnippet": { "type": "object", "description": "Optional attached code sample" },
+        "likes": { "type": "array", "description": "List of user IDs who liked the post" },
+        "comments": { "type": "array", "description": "List of comments/replies/solutions" },
+        "isSolved": { "type": "boolean", "description": "Whether the error query has been resolved" },
+        "solvedByCommentId": { "type": "string", "description": "The specific comment ID that solved the error" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "ISO 8601 creation timestamp" }
+      },
+      "required": ["id", "authorId", "authorName", "authorAvatarUrl", "authorRole", "content", "type", "likes", "comments", "createdAt"]
+    },
+    "TeacherChannelPost": {
+      "title": "TeacherChannelPost",
+      "description": "An educational broadcast or lesson published by a teacher",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique channel post ID" },
+        "teacherId": { "type": "string", "description": "User ID of the teacher who published it" },
+        "title": { "type": "string", "description": "Title of the lesson/broadcast" },
+        "content": { "type": "string", "description": "Lesson description or text content" },
+        "codeSnippet": { "type": "object", "description": "Optional attached code sample" },
+        "videoUrl": { "type": "string", "description": "Optional simulated video or lecture URL" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "ISO 8601 creation timestamp" }
+      },
+      "required": ["id", "teacherId", "title", "content", "createdAt"]
+    },
+    "AppNotification": {
+      "title": "AppNotification",
+      "description": "An in-app notification sent to a specific user",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique notification ID" },
+        "userId": { "type": "string", "description": "ID of the recipient user" },
+        "senderName": { "type": "string", "description": "Name of the notification sender" },
+        "senderAvatarUrl": { "type": "string", "description": "Avatar of the notification sender" },
+        "type": { "type": "string", "enum": ["like", "comment", "solution", "system", "broadcast", "ai_completion"], "description": "Notification category" },
+        "title": { "type": "string", "description": "Brief title of the notification" },
+        "message": { "type": "string", "description": "Full notification body text" },
+        "linkTab": { "type": "string", "enum": ["feed", "ide", "teachers", "profile"], "description": "Tab to redirect to when clicked" },
+        "read": { "type": "boolean", "description": "Whether the notification has been marked read" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "ISO 8601 creation timestamp" }
+      },
+      "required": ["id", "userId", "senderName", "senderAvatarUrl", "type", "title", "message", "linkTab", "read", "createdAt"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": "User",
+      "description": "User profiles database"
+    },
+    "posts/{postId}": {
+      "schema": "Post",
+      "description": "Interactive community feed posts and comments"
+    },
+    "channels_posts/{postId}": {
+      "schema": "TeacherChannelPost",
+      "description": "Teacher broadcast posts"
+    },
+    "notifications/{notificationId}": {
+      "schema": "AppNotification",
+      "description": "User specific notification records"
+    }
+  }
+}

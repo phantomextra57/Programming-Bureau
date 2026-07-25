@@ -1,0 +1,8 @@
+{
+  "name": "ديوان البرمجة",
+  "description": "منصة متكاملة تجمع المبرمجين (معلمين وطلاب)، تحتوي على محرر أكواد متقدم شبيه بـ VS Code، وقنوات للمعلمين يتابعها الطلاب، وتغذية منشورات تفاعلية لحل المشاكل التقنية وطرح الأسئلة.",
+  "requestFramePermissions": [],
+  "majorCapabilities": [
+    "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
+  ]
+}
