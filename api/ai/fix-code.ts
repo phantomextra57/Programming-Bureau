@@ -61,7 +61,7 @@ CRITICAL CONSTRAINTS FOR THE ARABIC EXPLANATION (explanation):
 - Keep the language supportive, highly professional, educational, and encouraging in modern fluent Arabic.`;
 
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      model: "gemini-3.6-flash",
       contents: prompt + "\n\nHere is the user's code:\n" + code,
       config: {
         responseMimeType: "application/json",
