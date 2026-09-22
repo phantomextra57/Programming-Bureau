@@ -388,16 +388,6 @@ export default function App() {
     );
   };
 
-  // Simulator profile helper triggers manually in profile tab
-  const handleSwitchUserTemp = async (userId: string) => {
-    // Simulator Switch user (for demo purposes if selected inside Profile panel)
-    const userDocRef = doc(db, "users", userId);
-    const userSnap = await getDoc(userDocRef);
-    if (userSnap.exists()) {
-      setCurrentUser(userSnap.data() as User);
-    }
-  };
-
   const handleCreateProfileTemp = async (
     name: string,
     username: string,
@@ -1050,11 +1040,8 @@ export default function App() {
           {activeTab === "profile" && (
             <UserProfile
               currentUser={currentUser}
-              allUsers={users}
-              onSwitchUser={handleSwitchUserTemp}
               onCreateProfile={handleCreateProfileTemp}
               onUpdateUserProfile={handleUpdateAvatarAndBanner}
-              onResetDatabase={handleResetDatabase}
             />
           )}
         </div>
